@@ -6,4 +6,4 @@ $db = Database::getInstance();
 
 $conn = $db->getConnection();
 
-echo "Connexion réussie ✅";
+echo "Connexion réussie ";
