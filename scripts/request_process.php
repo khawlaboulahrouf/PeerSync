@@ -1,15 +1,14 @@
 <?php
 
 /**
- * Création d'un ticket — statut EN_ATTENTE par défaut (entité HelpRequest).
+ * Création d'un ticket — statut PENDING par défaut.
  */
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../src/Entities/HelpRequest.php';
 require_once __DIR__ . '/../src/Repositories/HelpRequestRepository.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+startSessionIfNeeded();
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -50,10 +49,11 @@ try {
     $repo = new HelpRequestRepository();
     $repo->create($helpRequest);
 
-    $_SESSION['success'] = 'Ticket créé avec succès (statut EN_ATTENTE).';
+    $_SESSION['success'] = 'Ticket créé avec succès (statut PENDING).';
     header('Location: ../public/dashboard.php');
     exit;
 } catch (Exception $e) {
+    startSessionIfNeeded();
     $_SESSION['error'] = $e->getMessage();
     header('Location: ../public/create_request.php');
     exit;

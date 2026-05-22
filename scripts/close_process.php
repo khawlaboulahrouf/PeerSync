@@ -3,14 +3,13 @@
 /**
  * Résolution d'un ticket + commentaire optionnel + évaluation (note 1-5).
  */
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../src/Entities/Evaluation.php';
 require_once __DIR__ . '/../src/Repositories/HelpRequestRepository.php';
 require_once __DIR__ . '/../src/Enums/Status.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+startSessionIfNeeded();
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -50,7 +49,7 @@ try {
         if ($_SESSION['user_role'] !== 'student' || (int) $_SESSION['user_id'] !== $helpRequest->getIdStudent()) {
             throw new Exception('Seul l\'étudiant auteur peut noter ce ticket.');
         }
-        if ($helpRequest->getStatut() !== Status::RESOLUE) {
+        if ($helpRequest->getStatus() !== Status::RESOLVED) {
             throw new Exception('Le ticket doit être résolu avant l\'évaluation.');
         }
         $note = (int) ($_POST['note'] ?? 0);
@@ -62,11 +61,10 @@ try {
         exit;
     }
 
-    // Résolution par le tuteur assigné
     if ($_SESSION['user_role'] !== 'tutor' || (int) $_SESSION['user_id'] !== $helpRequest->getIdTutor()) {
         throw new Exception('Seul le tuteur assigné peut résoudre ce ticket.');
     }
-    if ($helpRequest->getStatut() !== Status::ASSIGNE) {
+    if ($helpRequest->getStatus() !== Status::ASSIGNED) {
         throw new Exception('Le ticket doit être assigné pour être résolu.');
     }
 
@@ -77,10 +75,11 @@ try {
     }
     $helpRepo->update($helpRequest);
 
-    $_SESSION['success'] = 'Ticket marqué comme RESOLUE.';
+    $_SESSION['success'] = 'Ticket marqué comme RESOLVED.';
     header('Location: ../public/request_detail.php?id=' . $requestId);
     exit;
 } catch (Exception $e) {
+    startSessionIfNeeded();
     $_SESSION['error'] = $e->getMessage();
     $id = (int) ($_POST['request_id'] ?? 0);
     header('Location: ' . ($id > 0 ? '../public/request_detail.php?id=' . $id : '../public/dashboard.php'));

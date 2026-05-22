@@ -1,11 +1,16 @@
 <?php
 
 /**
- * Enum métier des statuts de ticket (brief : EN_ATTENTE, ASSIGNE, RESOLUE).
+ * Statuts métiers compatibles PHP ancien.
  */
-class  Status
+class Status
 {
-    case EN_ATTENTE = 'EN_ATTENTE';
-    case ASSIGNE = 'ASSIGNE';
-    case RESOLUE = 'RESOLUE';
+    const PENDING = 'PENDING';
+    const ASSIGNED = 'ASSIGNED';
+    const RESOLVED = 'RESOLVED';
+
+    public static function isValid($status)
+    {
+        return in_array($status, [self::PENDING, self::ASSIGNED, self::RESOLVED], true);
+    }
 }

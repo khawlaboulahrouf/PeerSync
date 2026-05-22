@@ -3,14 +3,13 @@
 /**
  * Assignation d'un ticket à un tuteur connecté (règle métier assignTo).
  */
+require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../src/Enums/Status.php';
 require_once __DIR__ . '/../src/Repositories/UserRepository.php';
 require_once __DIR__ . '/../src/Repositories/HelpRequestRepository.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+startSessionIfNeeded();
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -37,7 +36,7 @@ try {
         throw new Exception('Ticket introuvable.');
     }
 
-    if ($helpRequest->getStatut() !== Status::EN_ATTENTE) {
+    if ($helpRequest->getStatus() !== Status::PENDING) {
         throw new Exception('Ce ticket n\'est plus en attente.');
     }
 
@@ -53,6 +52,7 @@ try {
     header('Location: ../public/request_detail.php?id=' . $requestId);
     exit;
 } catch (Exception $e) {
+    startSessionIfNeeded();
     $_SESSION['error'] = $e->getMessage();
     $id = (int) ($_POST['request_id'] ?? 0);
     if ($id > 0) {

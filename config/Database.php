@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Singleton PDO — point d'accès unique à la base aidesync.
+ * Singleton PDO — point d'accès unique à la base peersync.
  * Toute requête SQL passe par les Repositories, pas par cette classe.
  */
 class Database
 {
-    private static ?Database $instance = null;
+    private static $instance = null;
 
-    private string $host = 'localhost';
-    private string $dbname = 'aidesync';
-    private string $username = 'root';
-    private string $password = '';
+    private $host = 'localhost';
+    private $dbname = 'peersync';
+    private $username = 'root';
+    private $password = '';
 
-    private PDO $connection;
+    private $connection;
 
     private function __construct()
     {
@@ -27,7 +27,7 @@ class Database
         }
     }
 
-    public static function getInstance(): Database
+    public static function getInstance()
     {
         if (self::$instance === null) {
             self::$instance = new Database();
@@ -35,7 +35,7 @@ class Database
         return self::$instance;
     }
 
-    public function getConnection(): PDO
+    public function getConnection()
     {
         return $this->connection;
     }

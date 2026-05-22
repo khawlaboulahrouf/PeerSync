@@ -6,19 +6,14 @@
  */
 class User
 {
-    private ?int $id;
-    private string $name;
-    private string $email;
-    private string $password;
-    private string $role;
+    private $id;
+    private $name;
+    private $email;
+    private $password;
+    private $role;
 
-    public function __construct(
-        ?int $id,
-        string $name,
-        string $email,
-        string $password,
-        string $role
-    ) {
+    public function __construct($id, $name, $email, $password, $role)
+    {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
@@ -26,37 +21,37 @@ class User
         $this->role = $role;
     }
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->email;
     }
 
-    public function getPassword(): string
+    public function getPassword()
     {
         return $this->password;
     }
 
-    public function getRole(): string
+    public function getRole()
     {
         return $this->role;
     }
 
-    public function isTutor(): bool
+    public function isTutor()
     {
         return $this->role === 'tutor';
     }
 
-    public function isStudent(): bool
+    public function isStudent()
     {
         return $this->role === 'student';
     }

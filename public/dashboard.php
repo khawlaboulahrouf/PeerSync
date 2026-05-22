@@ -6,7 +6,6 @@
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../src/Repositories/HelpRequestRepository.php';
-require_once __DIR__ . '/../src/Repositories/UserRepository.php';
 
 requireLogin();
 
@@ -17,7 +16,6 @@ unset($_SESSION['success'], $_SESSION['error']);
 try {
     $repo = new HelpRequestRepository();
     $requests = $repo->getAll();
-    $userRepo = new UserRepository();
 } catch (Exception $e) {
     $error = $e->getMessage();
     $requests = [];
@@ -73,7 +71,7 @@ try {
                 <p><?= nl2br(htmlspecialchars($ticket->getDescription())) ?></p>
                 <p>
                     <span class="badge"><?= htmlspecialchars($ticket->getTechnologie()) ?></span>
-                    <span class="badge"><?= htmlspecialchars($ticket->getStatut()->value) ?></span>
+                    <span class="badge"><?= htmlspecialchars($ticket->getStatus()) ?></span>
                 </p>
                 <p><small>Créé le <?= htmlspecialchars($ticket->getCreatedAt() ?? '—') ?></small></p>
             </article>

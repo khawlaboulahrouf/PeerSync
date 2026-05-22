@@ -8,89 +8,83 @@ require_once __DIR__ . '/User.php';
  */
 class HelpRequest
 {
-    private ?int $id;
-    private string $titre;
-    private string $description;
-    private string $technologie;
-    private Status $statut;
-    private ?string $commentaire;
-    private int $id_student;
-    private ?int $id_tutor;
-    private ?string $created_at;
+    private $id;
+    private $titre;
+    private $description;
+    private $technologie;
+    private $status;
+    private $commentaire;
+    private $id_student;
+    private $id_tutor;
+    private $created_at;
 
-    public function __construct(
-        ?int $id,
-        string $titre,
-        string $description,
-        string $technologie,
-        int $id_student,
-        ?int $id_tutor = null,
-        Status $statut = Status::EN_ATTENTE,
-        ?string $commentaire = null,
-        ?string $created_at = null
-    ) {
+    public function __construct($id, $titre, $description, $technologie, $id_student, $id_tutor = null, $status = Status::PENDING, $commentaire = null, $created_at = null)
+    {
+        if (!Status::isValid($status)) {
+            $status = Status::PENDING;
+        }
         $this->id = $id;
         $this->titre = $titre;
         $this->description = $description;
         $this->technologie = $technologie;
         $this->id_student = $id_student;
         $this->id_tutor = $id_tutor;
-        $this->statut = $statut;
+        $this->status = $status;
         $this->commentaire = $commentaire;
         $this->created_at = $created_at;
     }
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getTitre(): string
+    public function getTitre()
     {
         return $this->titre;
     }
 
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->description;
     }
 
-    public function getTechnologie(): string
+    public function getTechnologie()
     {
         return $this->technologie;
     }
 
-    public function getStatut(): Status
+    public function getStatus()
     {
-        return $this->statut;
+        return $this->status;
     }
 
-    public function getCommentaire(): ?string
+    public function getCommentaire()
     {
         return $this->commentaire;
     }
 
-    public function getIdStudent(): int
+    public function getIdStudent()
     {
         return $this->id_student;
     }
 
-    public function getIdTutor(): ?int
+    public function getIdTutor()
     {
         return $this->id_tutor;
     }
 
-    public function getCreatedAt(): ?string
+    public function getCreatedAt()
     {
         return $this->created_at;
     }
 
-    public function setId(int $id): void
+    public function setId($id)
     {
         $this->id = $id;
     }
 
-    public function setCommentaire(?string $commentaire): void
+    public function setCommentaire($commentaire)
     {
         $this->commentaire = $commentaire;
     }
@@ -98,20 +92,20 @@ class HelpRequest
     /**
      * Assigne un tuteur : interdit l'auto-assignation (même ID).
      */
-    public function assignTo(User $tutor): void
+    public function assignTo(User $tutor)
     {
         if ($tutor->getId() === $this->id_student) {
             throw new Exception('Un étudiant ne peut pas s\'assigner lui-même.');
         }
-        $this->statut = Status::ASSIGNE;
+        $this->status = Status::ASSIGNED;
         $this->id_tutor = $tutor->getId();
     }
 
     /**
-     * Clôture le ticket (statut RESOLUE).
+     * Clôture le ticket (statut RESOLVED).
      */
-    public function resolve(): void
+    public function resolve()
     {
-        $this->statut = Status::RESOLUE;
+        $this->status = Status::RESOLVED;
     }
 }
